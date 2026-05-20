@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Field 4.0 — Pesquisa Semanal</title>
+  <style>
+    :root {
+      --blue: #0C65C6;
+      --blue-dark: #0855A8;
+      --blue-light: #E8F0FB;
+      --bg: #F5F5F5;
+      --card: #FFFFFF;
+      --text: #1D1D1F;
+      --text-sec: #6E6E73;
+      --border: #D1D1D6;
+      --green: #1A7F3C;
+      --green-bg: #E8F5ED;
+      --amber: #C07000;
+      --amber-bg: #FFF3D6;
+      --red: #C0001E;
+      --red-bg: #FFE8EC;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      background: var(--blue);
+      color: white;
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .header-brand { display: flex; align-items: center; gap: 10px; }
+    .header-logo {
+      background: white;
+      color: var(--blue);
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 13px; flex-shrink: 0;
+    }
+    .header-title { font-size: 16px; font-weight: 700; }
+    .header-sub { font-size: 11px; opacity: 0.75; margin-top: 1px; }
+    .draft-btn {
+      background: rgba(255,255,255,0.18);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      flex-shrink: 0;
+    }
+    .draft-btn:hover { background: rgba(255,255,255,0.28); }
+
+    /* ── PROGRESS ── */
+    .progress-bar { background: rgba(0,0,0,0.12); height: 3px; }
+    .progress-fill { background: white; height: 3px; width: 0%; transition: width 0.4s ease; }
+
+    /* ── SECTION NAV ── */
+    .section-nav {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 12px 16px 6px;
+      scrollbar-width: none;
+      background: var(--bg);
+      position: sticky;
+      top: 61px;
+      z-index: 90;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-nav::-webkit-scrollbar { display: none; }
+    .nav-pill {
+      flex-shrink: 0;
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 13px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-sec);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .nav-pill:hover { border-color: var(--blue); color: var(--blue); }
+    .nav-pill.active { background: var(--blue); border-color: var(--blue); color: white; }
+
+    /* ── MAIN CONTAINER ── */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 16px 16px 100px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1.5px solid var(--blue-light);
+    }
+    .section-badge {
+      background: var(--blue);
+      color: white;
+      min-width: 28px; height: 28px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .section-badge.header-badge { background: var(--text); font-size: 11px; }
+    .section-title { font-size: 16px; font-weight: 700; color: var(--blue); }
+    .section-subtitle { font-size: 12px; color: var(--text-sec); margin-top: 2px; }
+
+    /* ── FORM ELEMENTS ── */
+    .form-group { margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+    label.field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-sec);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .req { color: var(--red); margin-left: 2px; }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.18s, background 0.18s;
+      -webkit-appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--blue);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(12,101,198,0.1);
+    }
+    textarea { resize: vertical; min-height: 96px; line-height: 1.55; }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236E6E73' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+    /* Semana group */
+    .semana-group { display: flex; gap: 8px; }
+    .semana-group select { flex: 1; }
+
+    /* Sub-section */
+    .sub-section {
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .sub-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-size: 10px;
+      background: var(--blue-light);
+      color: var(--blue);
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-weight: 600;
+    }
+
+    /* Percent field */
+    .pct { position: relative; }
+    .pct input { padding-right: 28px; }
+    .pct::after {
+      content: '%';
+      position: absolute;
+      right: 11px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-sec);
+      font-size: 13px;
+      pointer-events: none;
+    }
+
+    /* Total pill */
+    .total-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-sec);
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      margin-top: 6px;
+      transition: all 0.2s;
+    }
+    .total-pill.ok { color: var(--green); border-color: var(--green); background: var(--green-bg); }
+    .total-pill.over { color: var(--red); border-color: var(--red); background: var(--red-bg); }
+
+    /* Radio buttons */
+    .radio-group { display: flex; gap: 8px; }
+    .radio-opt { flex: 1; position: relative; }
+    .radio-opt input[type="radio"] { display: none; }
+    .radio-opt label {
+      display: block;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 8px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-sec);
+      transition: all 0.15s;
+      text-transform: none;
+      letter-spacing: 0;
+      margin: 0;
+    }
+    .radio-opt input:checked + label { background: var(--blue); border-color: var(--blue); color: white; }
+    .radio-opt.r-green input:checked + label { background: var(--green); border-color: var(--green); }
+    .radio-opt.r-amber input:checked + label { background: var(--amber); border-color: var(--amber); }
+    .radio-opt.r-red input:checked + label { background: var(--red); border-color: var(--red); }
+
+    /* Helper */
+    .helper { font-size: 11px; color: var(--text-sec); margin-top: 5px; line-height: 1.4; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+    /* Photo upload */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s;
+      position: relative;
+    }
+    .upload-zone:hover { border-color: var(--blue); background: var(--blue-light); }
+    .upload-zone input[type="file"] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer;
+      width: 100%; height: 100%;
+    }
+    .upload-icon { font-size: 36px; margin-bottom: 8px; }
+    .upload-text { font-size: 15px; font-weight: 600; color: var(--text); }
+    .upload-hint { font-size: 12px; color: var(--text-sec); margin-top: 4px; }
+
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .photo-item {
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .photo-item img { width: 100%; height: 150px; object-fit: cover; display: block; }
+    .photo-caption { padding: 8px; }
+    .photo-caption input { font-size: 12px; padding: 6px 8px; }
+    .photo-remove {
+      display: block; width: 100%;
+      text-align: center; padding: 7px;
+      font-size: 11px; font-weight: 700;
+      color: var(--red); cursor: pointer;
+      background: none; border: none;
+      border-top: 1px solid var(--border);
+      font-family: inherit;
+    }
+    .photo-count {
+      font-size: 12px; font-weight: 600;
+      color: var(--text-sec);
+      text-align: right;
+      margin-top: 8px;
+    }
+
+    /* ── SUBMIT BAR ── */
+    .submit-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex; gap: 10px;
+      z-index: 100;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+    }
+    .submit-btn {
+      flex: 1;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .submit-btn:hover { background: var(--blue-dark); }
+    .submit-btn:active { transform: scale(0.98); }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: white;
+      border-radius: 18px;
+      padding: 30px 24px 24px;
+      max-width: 400px; width: 100%;
+      text-align: center;
+      animation: modalIn 0.25s ease;
+    }
+    @keyframes modalIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-check {
+      width: 56px; height: 56px;
+      background: var(--green-bg);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px;
+      font-size: 28px;
+    }
+    .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+    .modal-desc { font-size: 14px; color: var(--text-sec); line-height: 1.6; margin-bottom: 16px; }
+    .modal-path {
+      background: var(--blue-light);
+      border: 1px solid var(--blue);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-family: 'SF Mono', 'Menlo', monospace;
+      color: var(--blue);
+      word-break: break-all;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .modal-step {
+      font-size: 13px;
+      color: var(--text-sec);
+      text-align: left;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+    .modal-step strong { color: var(--text); }
+    .modal-btn {
+      background: var(--blue); color: white;
+      border: none; border-radius: 10px;
+      padding: 13px 24px; font-size: 15px; font-weight: 700;
+      cursor: pointer; font-family: inherit; width: 100%;
+    }
+    .modal-btn:hover { background: var(--blue-dark); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 500px) {
+      .form-row { grid-template-columns: 1fr; }
+      .form-row-3 { grid-template-columns: 1fr 1fr; }
+      .photos-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ PAGE HEADER ══ -->
+<header class="page-header">
+  <div class="header-brand">
+    <div class="header-logo">F4</div>
+    <div>
+      <div class="header-title">Field 4.0</div>
+      <div class="header-sub">Pesquisa Semanal de Campo</div>
+    </div>
+  </div>
+  <button class="draft-btn" onclick="saveDraft()">Salvar rascunho</button>
+</header>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- ══ SECTION NAV ══ -->
+<nav class="section-nav" id="sectionNav">
+  <a class="nav-pill active" href="#cabecalho">Cabeçalho</a>
+  <a class="nav-pill" href="#s1">S1 Resultados</a>
+  <a class="nav-pill" href="#s2">S2 Apple</a>
+  <a class="nav-pill" href="#s3">S3 Concorrência</a>
+  <a class="nav-pill" href="#s4">S4 Mercado</a>
+  <a class="nav-pill" href="#s5">S5 Need Help</a>
+  <a class="nav-pill" href="#s6">S6 Fotos</a>
+</nav>
+
+<div class="container">
+
+  <!-- ══ CABEÇALHO ══ -->
+  <div class="card" id="cabecalho">
+    <div class="section-header">
+      <div class="section-badge header-badge">ID</div>
+      <div>
+        <div class="section-title" style="color:var(--text)">Cabeçalho</div>
+        <div class="section-subtitle">Identificação da resposta</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="field-label">Semana Fiscal <span class="req">*</span></label>
+      <div class="semana-group">
+        <select id="fiscal_year">
+          <option value="FY26" selected>FY26</option>
+          <option value="FY27">FY27</option>
+        </select>
+        <select id="fiscal_quarter">
+          <option value="Q1">Q1</option>
+          <option value="Q2">Q2</option>
+          <option value="Q3" selected>Q3</option>
+          <option value="Q4">Q4</option>
+        </select>
+        <select id="fiscal_week" aria-label="Semana"></select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="field-label">Account <span class="req">*</span></label>
+      <select id="account">
+        <option value="">Selecionar...</option>
+        <option>Vivo</option>
+        <option>Magalu</option>
+        <option>Casas Bahia</option>
+        <option>Claro</option>
+        <option>TIM</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ══ SESSÃO 1 — RESULTADOS ══ -->
+  <div class="card" id="s1">
+    <div class="section-header">
+      <div class="section-badge">1</div>
+      <div>
+        <div class="section-title">Sessão 1 — Resultados</div>
+        <div class="section-subtitle">Performance e métricas da semana</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="field-label">Forecast TST vs UnB</label>
+        <input type="text" id="s1_forecast" placeholder="ex.: +5%, -8%, no plano">
+        <div class="helper">Comparação semanal — use sinal + ou −</div>
+      </div>
+      <div class="form-group">
+        <label class="field-label">UnB (unidades)</label>
+        <input type="number" id="s1_unb" placeholder="0" min="0" step="1">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="field-label">ST LP (unidades)</label>
+      <input type="number" id="s1_stlp" placeholder="0" min="0" step="1">
+    </div>
+
+    <hr class="divider">
+
+    <!-- Legacy -->
+    <div class="sub-section">
+      <div class="sub-title">
+        Legacy — Relevância
+        <span class="tag">iPhone 15 · 16e · 16</span>
+      </div>
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="field-label">iPhone 15</label>
+          <div class="pct">
+            <input type="number" id="l_15" placeholder="0" min="0" max="100" oninput="calcLegacy()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="field-label">iPhone 16e</label>
+          <div class="pct">
+            <input type="number" id="l_16e" placeholder="0" min="0" max="100" oninput="calcLegacy()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="field-label">iPhone 16</label>
+          <div class="pct">
+            <input type="number" id="l_16" placeholder="0" min="0" max="100" oninput="calcLegacy()">
+          </div>
+        </div>
+      </div>
+      <span class="total-pill" id="legacyTotal">Total: 0%</span>
+    </div>
+
+    <!-- NPI -->
+    <div class="sub-section">
+      <div class="sub-title">
+        NPI — Relevância
+        <span class="tag">iPhone 17</span>
+      </div>
+      <div class="form-row-3">
+        <div class="form-group">
+          <label class="field-label">iPhone 17e</label>
+          <div class="pct">
+            <input type="number" id="n_17e" placeholder="0" min="0" max="100" oninput="calcNPI()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="field-label">iPhone 17</label>
+          <div class="pct">
+            <input type="number" id="n_17" placeholder="0" min="0" max="100" oninput="calcNPI()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="field-label">iPhone 17 Pro</label>
+          <div class="pct">
+            <input type="number" id="n_17p" placeholder="0" min="0" max="100" oninput="calcNPI()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="field-label">iPhone 17 Pro Max</label>
+          <div class="pct">
+            <input type="number" id="n_17pm" placeholder="0" min="0" max="100" oninput="calcNPI()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="field-label">iPhone Air</label>
+          <div class="pct">
+            <input type="number" id="n_air" placeholder="0" min="0" max="100" oninput="calcNPI()">
+          </div>
+        </div>
+      </div>
+      <span class="total-pill" id="npiTotal">Total: 0%</span>
+    </div>
+
+    <!-- Attach -->
+    <div class="sub-section">
+      <div class="sub-title">Attach Rate</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="field-label">Attach AirPods</label>
+          <div class="pct">
+            <input type="number" id="att_airpods" placeholder="0" min="0" max="100">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Attach Watch</label>
+          <div class="pct">
+            <input type="number" id="att_watch" placeholder="0" min="0" max="100">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="field-label">Comentários — Sessão 1</label>
+      <textarea id="s1_comentarios" placeholder="Contexto adicional sobre os resultados desta semana: atrasos, promoções ativas, fluxo de loja, sell-in vs sell-out..."></textarea>
+    </div>
+  </div>
+
+  <!-- ══ SESSÃO 2 — APPLE INSIGHTS ══ -->
+  <div class="card" id="s2">
+    <div class="section-header">
+      <div class="section-badge">2</div>
+      <div>
+        <div class="section-title">Sessão 2 — Apple Insights</div>
+        <div class="section-subtitle">O que observou sobre Apple esta semana?</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="field-label">Insights Apple nesta semana</label>
+      <textarea id="s2_insights" placeholder="Treinamentos realizados, percepções da equipe sobre produto, ações de merchan, feedbacks do parceiro sobre Apple, comportamento do sell-out, novidades de produto no piso..." style="min-height:130px;"></textarea>
+    </div>
+  </div>
+
+  <!-- ══ SESSÃO 3 — CONCORRÊNCIA ══ -->
+  <div class="card" id="s3">
+    <div class="section-header">
+      <div class="section-badge">3</div>
+      <div>
+        <div class="section-title">Sessão 3 — Concorrência</div>
+        <div class="section-subtitle">Movimentos da semana</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="field-label">Insights concorrência nesta semana</label>
+      <textarea id="s3_concorrencia" placeholder="Promoções ativas, novos lançamentos, ações de sell-out no piso, preços praticados, percepções dos vendedores sobre outros fabricantes, ações de treinamento da concorrência..." style="min-height:130px;"></textarea>
+    </div>
+  </div>
+
+  <!-- ══ SESSÃO 4 — MERCADO ══ -->
+  <div class="card" id="s4">
+    <div class="section-header">
+      <div class="section-badge">4</div>
+      <div>
+        <div class="section-title">Sessão 4 — Mercado</div>
+        <div class="section-subtitle">Contexto e clima da semana</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="field-label">Insights sobre o Mercado</label>
+      <textarea id="s4_texto" placeholder="Sazonalidade, datas comemorativas, comportamento de demanda, ações do parceiro, contexto econômico, eventos relevantes..." style="min-height:110px;"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="field-label">Como está o Fluxo? <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="radio-opt r-red">
+          <input type="radio" name="fluxo" id="fluxo_baixo" value="Baixo">
+          <label for="fluxo_baixo">Baixo</label>
+        </div>
+        <div class="radio-opt r-amber">
+          <input type="radio" name="fluxo" id="fluxo_medio" value="Médio">
+          <label for="fluxo_medio">Médio</label>
+        </div>
+        <div class="radio-opt r-green">
+          <input type="radio" name="fluxo" id="fluxo_alto" value="Alto">
+          <label for="fluxo_alto">Alto</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="field-label">Como está a Meta? <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="radio-opt r-red">
+          <input type="radio" name="meta" id="meta_abaixo" value="Abaixo da meta">
+          <label for="meta_abaixo">Abaixo</label>
+        </div>
+        <div class="radio-opt r-amber">
+          <input type="radio" name="meta" id="meta_na" value="Na meta">
+          <label for="meta_na">Na meta</label>
+        </div>
+        <div class="radio-opt r-green">
+          <input type="radio" name="meta" id="meta_acima" value="Acima da meta">
+          <label for="meta_acima">Acima</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SESSÃO 5 — NEED HELP ══ -->
+  <div class="card" id="s5">
+    <div class="section-header">
+      <div class="section-badge" style="background:#C0001E;">5</div>
+      <div>
+        <div class="section-title" style="color:#C0001E;">Sessão 5 — Need Help</div>
+        <div class="section-subtitle">Pedidos de apoio</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="field-label">O que você precisa?</label>
+      <textarea id="s5_needhelp" placeholder="Descreva qualquer bloqueio operacional, necessidade de escalação, apoio de produto ou executivo, material de merchan, treinamento específico, visita de campo..." style="min-height:110px;"></textarea>
+      <div class="helper">Cada pedido será listado individualmente no resumo. Seja específico — todos os itens são priorizados pelo ACE Leader.</div>
+    </div>
+  </div>
+
+  <!-- ══ SESSÃO 6 — FOTOS ══ -->
+  <div class="card" id="s6">
+    <div class="section-header">
+      <div class="section-badge" style="background:#5E3A8C;">6</div>
+      <div>
+        <div class="section-title" style="color:#5E3A8C;">Sessão 6 — Fotos</div>
+        <div class="section-subtitle">Registros visuais da semana (máx. 6 fotos)</div>
+      </div>
+    </div>
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotos(this)">
+      <div class="upload-icon">📷</div>
+      <div class="upload-text">Toque para adicionar fotos</div>
+      <div class="upload-hint">JPEG · PNG · HEIC — máximo 6 fotos</div>
+    </div>
+    <div class="photos-grid" id="photosGrid"></div>
+    <div class="photo-count" id="photoCount" style="display:none"></div>
+  </div>
+
+</div><!-- .container -->
+
+<!-- ══ SUBMIT BAR ══ -->
+<div class="submit-bar">
+  <button class="submit-btn" onclick="submitForm()">
+    Gerar e Baixar Resposta
+  </button>
+</div>
+
+<!-- ══ SUCCESS MODAL ══ -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div class="modal-check">✓</div>
+    <div class="modal-title">Resposta gerada!</div>
+    <div class="modal-desc">O arquivo JSON foi baixado. Agora salve-o na pasta correta no BOX:</div>
+    <div class="modal-path" id="modalPath"></div>
+    <div class="modal-step">
+      <strong>1.</strong> Abra o <strong>Box Drive</strong> no seu Mac<br>
+      <strong>2.</strong> Navegue até a pasta acima<br>
+      <strong>3.</strong> Arraste o arquivo JSON baixado para dentro da pasta
+    </div>
+    <button class="modal-btn" onclick="closeModal()">Entendido</button>
+  </div>
+</div>
+
+<script>
+// ── WEEK SELECTOR ──
+(function() {
+  const sel = document.getElementById('fiscal_week');
+  for (let w = 1; w <= 13; w++) {
+    const opt = document.createElement('option');
+    const label = 'W' + String(w).padStart(2, '0');
+    opt.value = label;
+    opt.textContent = label;
+    sel.appendChild(opt);
+  }
+  // Best-guess current week (approximate)
+  const approx = Math.ceil((new Date().getDate()) / 7) + 4;
+  const clamped = Math.min(13, Math.max(1, approx));
+  sel.value = 'W' + String(clamped).padStart(2, '0');
+})();
+
+// ── PROGRESS BAR ──
+function updateProgress() {
+  const fields = ['account'];
+  const done = fields.filter(id => (document.getElementById(id)?.value || '').trim().length > 0).length;
+  const radios = ['fluxo','meta'].filter(n => document.querySelector(`input[name="${n}"]:checked`)).length;
+  const total = fields.length + radios;
+  const filled = done + radios;
+  document.getElementById('progressFill').style.width = Math.round((filled / total) * 100) + '%';
+}
+document.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('change', updateProgress);
+  el.addEventListener('input', updateProgress);
+});
+
+// ── PERCENT TOTALS ──
+function sumFields(ids) {
+  return ids.reduce((acc, id) => acc + (parseFloat(document.getElementById(id)?.value) || 0), 0);
+}
+function setTotal(elId, total) {
+  const el = document.getElementById(elId);
+  el.textContent = 'Total: ' + total + '%';
+  el.className = 'total-pill' + (total > 100 ? ' over' : total === 100 ? ' ok' : '');
+}
+function calcLegacy() { setTotal('legacyTotal', sumFields(['l_15','l_16e','l_16'])); }
+function calcNPI()    { setTotal('npiTotal',    sumFields(['n_17e','n_17','n_17p','n_17pm','n_air'])); }
+
+// ── PHOTOS ──
+let photosData = [];
+
+function handlePhotos(input) {
+  const files = Array.from(input.files);
+  const slots = 6 - photosData.length;
+  if (slots <= 0) { alert('Limite de 6 fotos atingido.'); return; }
+  const toLoad = files.slice(0, slots);
+  if (files.length > slots) alert('Máximo de 6 fotos. Apenas as primeiras ' + slots + ' foram adicionadas.');
+
+  let loaded = 0;
+  toLoad.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      photosData.push({ base64: e.target.result, legenda: '', filename: file.name });
+      loaded++;
+      if (loaded === toLoad.length) renderPhotos();
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+function renderPhotos() {
+  const grid = document.getElementById('photosGrid');
+  grid.innerHTML = '';
+  photosData.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'photo-item';
+    div.innerHTML =
+      '<img src="' + p.base64 + '" alt="Foto ' + (i+1) + '">' +
+      '<div class="photo-caption">' +
+        '<input type="text" placeholder="Legenda (opcional)" value="' + (p.legenda||'').replace(/"/g,'&quot;') + '"' +
+        ' oninput="photosData[' + i + '].legenda=this.value">' +
+      '</div>' +
+      '<button class="photo-remove" onclick="removePhoto(' + i + ')">Remover</button>';
+    grid.appendChild(div);
+  });
+  const zone = document.getElementById('uploadZone');
+  zone.style.display = photosData.length >= 6 ? 'none' : 'block';
+  const cnt = document.getElementById('photoCount');
+  if (photosData.length > 0) {
+    cnt.textContent = photosData.length + '/6 foto(s)';
+    cnt.style.display = 'block';
+  } else {
+    cnt.style.display = 'none';
+  }
+}
+
+function removePhoto(idx) {
+  photosData.splice(idx, 1);
+  renderPhotos();
+}
+
+// ── COLLECT ──
+function collectData() {
+  return {
+    meta: {
+      fiscal_year:      document.getElementById('fiscal_year').value,
+      quarter:          document.getElementById('fiscal_quarter').value,
+      semana_fiscal:    document.getElementById('fiscal_week').value,
+      semana_label:     document.getElementById('fiscal_year').value + ' ' +
+                        document.getElementById('fiscal_quarter').value + ' ' +
+                        document.getElementById('fiscal_week').value,
+      account:          document.getElementById('account').value,
+      timestamp:        new Date().toISOString()
+    },
+    s1_resultados: {
+      forecast_tst_unb: document.getElementById('s1_forecast').value.trim(),
+      unb:              document.getElementById('s1_unb').value,
+      st_lp:            document.getElementById('s1_stlp').value,
+      legacy: {
+        iphone_15:  document.getElementById('l_15').value,
+        iphone_16e: document.getElementById('l_16e').value,
+        iphone_16:  document.getElementById('l_16').value
+      },
+      npi: {
+        iphone_17e:      document.getElementById('n_17e').value,
+        iphone_17:       document.getElementById('n_17').value,
+        iphone_17_pro:   document.getElementById('n_17p').value,
+        iphone_17_pro_max: document.getElementById('n_17pm').value,
+        iphone_air:      document.getElementById('n_air').value
+      },
+      attach_airpods: document.getElementById('att_airpods').value,
+      attach_watch:   document.getElementById('att_watch').value,
+      comentarios:    document.getElementById('s1_comentarios').value.trim()
+    },
+    s2_apple_insights: document.getElementById('s2_insights').value.trim(),
+    s3_concorrencia:   document.getElementById('s3_concorrencia').value.trim(),
+    s4_mercado: {
+      texto: document.getElementById('s4_texto').value.trim(),
+      fluxo: (document.querySelector('input[name="fluxo"]:checked') || {}).value || '',
+      meta:  (document.querySelector('input[name="meta"]:checked')  || {}).value || ''
+    },
+    s5_need_help: document.getElementById('s5_needhelp').value.trim(),
+    s6_fotos: photosData.map(p => ({ base64: p.base64, legenda: p.legenda, filename: p.filename }))
+  };
+}
+
+// ── VALIDATE ──
+function validate(d) {
+  const err = [];
+  if (!d.meta.account)           err.push('Account (Cabeçalho)');
+  if (!d.s4_mercado.fluxo)       err.push('Fluxo (Sessão 4)');
+  if (!d.s4_mercado.meta)        err.push('Meta (Sessão 4)');
+  return err;
+}
+
+// ── FILENAME ──
+function makeFilename(d) {
+  const slug = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+  const acc = slug(d.meta.account);
+  const sem = (d.meta.fiscal_year + d.meta.quarter + d.meta.semana_fiscal).toLowerCase();
+  const ts  = new Date().toISOString().replace(/[-:T]/g,'').slice(0,12);
+  return 'field_' + acc + '_' + sem + '_' + ts + '.json';
+}
+
+// ── SUBMIT ──
+function submitForm() {
+  const data = collectData();
+  const errors = validate(data);
+  if (errors.length) {
+    alert('Preencha os campos obrigatórios:\n\n• ' + errors.join('\n• '));
+    return;
+  }
+
+  const filename = makeFilename(data);
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+
+  // Modal path
+  document.getElementById('modalPath').textContent =
+    'Box / Field 4.0 / ' + data.meta.account + ' / ' + data.meta.semana_fiscal + ' / ' + filename;
+
+  localStorage.removeItem('field40_draft');
+  document.getElementById('successModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('successModal').classList.remove('show');
+}
+
+// ── DRAFT ──
+function saveDraft() {
+  localStorage.setItem('field40_draft', JSON.stringify(collectData()));
+  alert('Rascunho salvo. Você pode fechar esta janela e continuar depois.');
+}
+
+function loadDraft() {
+  let d;
+  try { d = JSON.parse(localStorage.getItem('field40_draft') || ''); } catch(e) { return; }
+  if (!d || !d.meta) return;
+
+  const set = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
+  const m = d.meta || {};
+  set('fiscal_year',    m.fiscal_year);
+  set('fiscal_quarter', m.quarter);
+  setTimeout(() => set('fiscal_week', m.semana_fiscal), 50);
+  set('account', m.account);
+
+  const s1 = d.s1_resultados || {};
+  set('s1_forecast', s1.forecast_tst_unb);
+  set('s1_unb',  s1.unb);
+  set('s1_stlp', s1.st_lp);
+  if (s1.legacy) { set('l_15', s1.legacy.iphone_15); set('l_16e', s1.legacy.iphone_16e); set('l_16', s1.legacy.iphone_16); }
+  if (s1.npi)    { set('n_17e', s1.npi.iphone_17e); set('n_17', s1.npi.iphone_17); set('n_17p', s1.npi.iphone_17_pro); set('n_17pm', s1.npi.iphone_17_pro_max); set('n_air', s1.npi.iphone_air); }
+  set('att_airpods', s1.attach_airpods);
+  set('att_watch',   s1.attach_watch);
+  set('s1_comentarios', s1.comentarios);
+  set('s2_insights',    d.s2_apple_insights);
+  set('s3_concorrencia',d.s3_concorrencia);
+
+  const s4 = d.s4_mercado || {};
+  set('s4_texto', s4.texto);
+  if (s4.fluxo) { const r = document.querySelector('input[name="fluxo"][value="' + s4.fluxo + '"]'); if (r) r.checked = true; }
+  if (s4.meta)  { const r = document.querySelector('input[name="meta"][value="'  + s4.meta  + '"]'); if (r) r.checked = true; }
+  set('s5_needhelp', d.s5_need_help);
+
+  if (Array.isArray(d.s6_fotos) && d.s6_fotos.length) { photosData = d.s6_fotos; renderPhotos(); }
+  calcLegacy(); calcNPI(); updateProgress();
+}
+
+// ── SECTION NAV HIGHLIGHT ──
+const sections = ['cabecalho','s1','s2','s3','s4','s5','s6'];
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+      const pill = document.querySelector('.nav-pill[href="#' + e.target.id + '"]');
+      if (pill) {
+        pill.classList.add('active');
+        pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  });
+}, { threshold: 0.4 });
+sections.forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', loadDraft);
+</script>
+</body>
+</html>
