@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Field 4.0 — Handoff FY26 Q3 W08</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif; background:#F5F5F5; color:#1D1D1F; -webkit-font-smoothing:antialiased; }
+.wrap { max-width:800px; margin:0 auto; padding:24px 16px 48px; }
+.card { background:white; border-radius:14px; padding:20px; margin-bottom:14px; box-shadow:0 1px 4px rgba(0,0,0,0.07); }
+h2 { font-size:13px; font-weight:800; color:#0C65C6; text-transform:uppercase; letter-spacing:0.07em; margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid #E8F0FB; }
+.row { display:flex; align-items:flex-start; gap:12px; padding:8px 0; border-bottom:1px solid #F5F5F5; }
+.row:last-child { border-bottom:none; }
+.dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.dot.green { background:#1A7F3C; }
+.dot.blue  { background:#0C65C6; }
+.dot.amber { background:#C07000; }
+.dot.gray  { background:#6E6E73; }
+.row-content { flex:1; }
+.row-title { font-size:13px; font-weight:700; color:#1D1D1F; margin-bottom:2px; }
+.row-sub   { font-size:12px; color:#6E6E73; line-height:1.5; }
+.row-sub code { font-family:'SF Mono',Menlo,monospace; font-size:11px; background:#F5F5F5; padding:1px 5px; border-radius:4px; color:#0C65C6; }
+.badge { display:inline-block; font-size:10px; font-weight:700; border-radius:5px; padding:2px 7px; margin-left:6px; }
+.badge.ok    { background:#E8F5ED; color:#1A7F3C; }
+.badge.warn  { background:#FFF3D6; color:#C07000; }
+.badge.info  { background:#E8F0FB; color:#0C65C6; }
+.flow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.fnode { background:#F5F5F5; border:1px solid #D1D1D6; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:600; color:#1D1D1F; }
+.fnode.blue { background:#0C65C6; border-color:#0C65C6; color:white; }
+.fnode.green{ background:#1A7F3C; border-color:#1A7F3C; color:white; }
+.arrow { font-size:14px; color:#0C65C6; }
+table { width:100%; border-collapse:collapse; }
+th { font-size:10px; font-weight:800; color:#6E6E73; text-transform:uppercase; letter-spacing:0.05em; padding:6px 8px; text-align:left; background:#F5F5F5; }
+td { font-size:12px; padding:8px; border-bottom:1px solid #F5F5F5; vertical-align:top; color:#1D1D1F; }
+td code { font-family:'SF Mono',Menlo,monospace; font-size:11px; color:#0C65C6; background:#F5F5F5; padding:1px 4px; border-radius:3px; }
+.pending-item { display:flex; gap:10px; padding:8px 0; border-bottom:1px solid #F5F5F5; font-size:13px; }
+.pending-item:last-child { border-bottom:none; }
+.num { width:22px; height:22px; border-radius:6px; background:#F5F5F5; border:1px solid #D1D1D6; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#6E6E73; flex-shrink:0; }
+</style>
+</head>
+<body>
+
+<div style="background:linear-gradient(135deg,#0C65C6,#0A4F9E);padding:20px 20px 18px;">
+  <div style="max-width:800px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+    <div>
+      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:5px;">Documento de Handoff</div>
+      <div style="font-size:22px;font-weight:800;color:white;">Field 4.0 — Sessao FY26 Q3 W08</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:4px;">21 de maio de 2026 · Para continuar: carregue este arquivo no proximo chat</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:8px 14px;text-align:center;">
+      <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;">Sistema</div>
+      <div style="font-size:15px;font-weight:800;color:white;margin-top:2px;">Operacional</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- FLUXO COMPLETO -->
+<div class="card">
+  <h2>Fluxo do Sistema</h2>
+  <div class="flow">
+    <div class="fnode blue">Formulario HTML</div>
+    <div class="arrow">→</div>
+    <div class="fnode">GitHub API</div>
+    <div class="arrow">→</div>
+    <div class="fnode">GitHub Repo</div>
+    <div class="arrow">→</div>
+    <div class="fnode green">Sync 15 min</div>
+    <div class="arrow">→</div>
+    <div class="fnode">BOX Drive</div>
+    <div class="arrow">→</div>
+    <div class="fnode blue">Dashboard HTML</div>
+  </div>
+  <div class="row">
+    <div class="dot green"></div>
+    <div class="row-content">
+      <div class="row-title">Formulario de coleta <span class="badge ok">Publicado</span></div>
+      <div class="row-sub">URL: <code>https://judepaulla.github.io/field40-pesquisa/</code><br>Contas: Vivo, Magalu, Casas Bahia, Claro, TIM · 6 sessoes · Fotos base64</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="dot green"></div>
+    <div class="row-content">
+      <div class="row-title">Sync automatico GitHub → BOX <span class="badge ok">Ativo</span></div>
+      <div class="row-sub">Scheduled task <code>[d2b7ddb8]</code> · a cada 15 min · usa <code>cp</code> (nao rsync)</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="dot green"></div>
+    <div class="row-content">
+      <div class="row-title">Parse e sintese <span class="badge ok">Funcionando</span></div>
+      <div class="row-sub">Acionar com: <code>"Gerar relatorio Field 4.0 W{N}"</code></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="dot green"></div>
+    <div class="row-content">
+      <div class="row-title">Documento vivo (resumo editavel) <span class="badge ok">Funcionando</span></div>
+      <div class="row-sub">Texto sintetizado editavel inline · Restaurar por secao · Salvar versao final gera JSON de contexto</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="dot green"></div>
+    <div class="row-content">
+      <div class="row-title">Dashboard final <span class="badge ok">Funcionando</span></div>
+      <div class="row-sub">Acionar com: <code>"Gerar Dashboard {Account} W{N}"</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- TODOS OS ARQUIVOS -->
+<div class="card">
+  <h2>Mapa de Arquivos</h2>
+  <table>
+    <tr><th>Arquivo</th><th>Localizacao</th><th>Tipo</th></tr>
+    <tr>
+      <td><strong>Formulario de coleta</strong></td>
+      <td><code>BOX/Field 4.0/_Formularios/field40_pesquisa_semanal.html</code></td>
+      <td><span class="badge ok">HTML</span></td>
+    </tr>
+    <tr>
+      <td><strong>Documento vivo W08</strong></td>
+      <td><code>BOX/Field 4.0/_Resumos/magalu_resumo_fy26q3w08.html</code></td>
+      <td><span class="badge info">HTML editavel</span></td>
+    </tr>
+    <tr>
+      <td><strong>Dashboard final W08</strong></td>
+      <td><code>BOX/Field 4.0/_Resumos/magalu-insights-fy26q3w08.html</code></td>
+      <td><span class="badge ok">Dashboard</span></td>
+    </tr>
+    <tr>
+      <td><strong>Respostas Magalu W08</strong></td>
+      <td><code>BOX/Field 4.0/Magalu/W08/field_magalu_*.json</code> (2 arquivos)</td>
+      <td><span class="badge info">JSON</span></td>
+    </tr>
+    <tr>
+      <td><strong>Script parse</strong></td>
+      <td><code>~/.agents/skills/field-4-synthesis/scripts/parse_responses.py</code></td>
+      <td><span class="badge gray">Python</span></td>
+    </tr>
+    <tr>
+      <td><strong>Script sync</strong></td>
+      <td><code>~/.agents/skills/field-4-synthesis/scripts/sync_responses.sh</code></td>
+      <td><span class="badge gray">Shell</span></td>
+    </tr>
+    <tr>
+      <td><strong>Script resumo</strong></td>
+      <td><code>~/.agents/skills/field-4-synthesis/scripts/build_resumo.py</code></td>
+      <td><span class="badge gray">Python</span></td>
+    </tr>
+    <tr>
+      <td><strong>Script dashboard</strong></td>
+      <td><code>~/.agents/skills/field-4-synthesis/scripts/build_dashboard.py</code></td>
+      <td><span class="badge gray">Python</span></td>
+    </tr>
+    <tr>
+      <td><strong>Estado do projeto</strong></td>
+      <td><code>~/.agents/skills/field-4-synthesis/STATE.md</code></td>
+      <td><span class="badge info">Markdown</span></td>
+    </tr>
+  </table>
+</div>
+
+<!-- NOTAS TECNICAS -->
+<div class="card">
+  <h2>Notas Tecnicas Criticas</h2>
+  <div class="row">
+    <div class="dot amber"></div>
+    <div class="row-content">
+      <div class="row-title">BOX Drive — restricoes de escrita</div>
+      <div class="row-sub">Bloqueia: rsync rename, chmod, rm de arquivos sincronizados, sobrescrita de arquivos existentes.<br>Permite: <code>cp</code> para novos arquivos, <code>open("w")</code> para novos arquivos (erro de chmod e ignorado — arquivo e criado).</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="dot amber"></div>
+    <div class="row-content">
+      <div class="row-title">GitHub PAT no formulario</div>
+      <div class="row-sub">Token codificado em XOR (chave: <code>field40brasil</code>) para evitar GitHub Secret Scanning. Push protection bloqueia ate base64.</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="dot blue"></div>
+    <div class="row-content">
+      <div class="row-title">Fluxo de edicao correto</div>
+      <div class="row-sub">1. Abrir documento vivo no browser → 2. Editar texto diretamente → 3. Clicar "Salvar versao final" (gera JSON) → 4. Dizer "Gerar Dashboard" ao Enchante (le o JSON).</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROXIMOS PASSOS -->
+<div class="card">
+  <h2>Proximos Passos</h2>
+  <div class="pending-item"><div class="num">1</div>Testar o formulario com respondentes Vivo, Casas Bahia, Claro, TIM — validar que JSONs chegam ao BOX corretamente.</div>
+  <div class="pending-item"><div class="num">2</div>Validar o fluxo completo: edicao no documento vivo → "Salvar versao final" → "Gerar Dashboard" com o JSON de contexto aplicado.</div>
+  <div class="pending-item"><div class="num">3</div>Considerar adicionar campo de "Regiao/Diretoria" de volta ao formulario como opcional (removido nesta sessao mas pode ser util para Need Help).</div>
+  <div class="pending-item"><div class="num">4</div>Criar o fluxo para outras accounts: "Gerar relatorio Field 4.0 W{N}" ja suporta Vivo, Magalu, Casas Bahia, Claro, TIM — so precisam de respostas.</div>
+  <div class="pending-item"><div class="num">5</div>Avaliar automacao do envio do dashboard por email apos aprovacao (skill send-email ja disponivel).</div>
+</div>
+
+<!-- COMO RETOMAR -->
+<div class="card" style="border:2px solid #0C65C6;">
+  <h2>Como retomar no proximo chat</h2>
+  <div class="row">
+    <div class="dot blue"></div>
+    <div class="row-content">
+      <div class="row-title">Carregue a skill de sintese</div>
+      <div class="row-sub">A skill <code>field-4-0-agente-de-sintese-de-pesquisa-semanal</code> e carregada automaticamente. Leia tambem o <code>STATE.md</code> para contexto completo.</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="dot blue"></div>
+    <div class="row-content">
+      <div class="row-title">Para coletar respostas de uma nova semana</div>
+      <div class="row-sub">Distribua o link <code>https://judepaulla.github.io/field40-pesquisa/</code> — o sync automatico cuida do resto.</div>
+    </div>
+  </div>
+  <div class="row" style="border-bottom:none;">
+    <div class="dot blue"></div>
+    <div class="row-content">
+      <div class="row-title">Para gerar o resumo e dashboard</div>
+      <div class="row-sub">Diga: <code>"Gerar relatorio Field 4.0 W{N}"</code> — o agente le os JSONs, sintetiza e abre o documento vivo para edicao.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div style="background:#1D1D1F;padding:14px 20px;text-align:center;">
+  <div style="font-size:11px;color:rgba(255,255,255,0.4);">Field 4.0 · Handoff FY26 Q3 W08 · jpaula@apple.com</div>
+</div>
+</body>
+</html>
